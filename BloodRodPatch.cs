@@ -15,23 +15,19 @@ namespace Mod_PandaBloodRodEffectMod
         static void PreparePostfix(AttackProcess __instance, Chara _CC, Thing _weapon)
         {
             if (_CC == null || _weapon == null) return;
-
             if (_weapon.id != "staff_blood") return;
 
-            int maxMP = _CC.mana.max;
             int currentMP = _CC.mana.value;
 
-            if (currentMP <= 20) return;
-            if (maxMP <= 0) return;
+            int A = Mathf.Clamp(currentMP / 200, 1, 200);
 
-            int mpCost = Mathf.FloorToInt(maxMP * 0.05f);
-            int bonusDice = Mathf.Min(200, Mathf.FloorToInt(maxMP * 0.005f));
+            int B = Mathf.Clamp(currentMP / 400, 1, 100);
 
-            if (mpCost <= 0 && bonusDice <= 0) return;
+            __instance.dDim += A;
+            __instance.dBonus += B;
 
-            _CC.mana.Mod(-mpCost);
-
-            __instance.dNum += bonusDice;
+            int cost = currentMP / 20;
+            _CC.mana.value = currentMP - cost;
         }
     }
 }

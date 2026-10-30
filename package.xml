@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Meta>
+  <title>Panda's Elonaplus Blood Rod Effect Mod</title>
+  <id>Mod_PandaBloodRodEffectMod</id>
+  <author>Now Happy Panda</author>
+  <loadPriority>1000</loadPriority>
+  <description>Add a spcecial function to Blood Rod from Elona+ Oddities mod
+  Attacking with it now consumes 5% of your maximum MP if you are above 20MP, and adds 0.5% of your max MP to your attack dice (up to 200; to reach that, one must have 40,000 mana for maximum effect, and then each attack will drain 2000)</description>
+  <version>0.23.356</version>
+</Meta>

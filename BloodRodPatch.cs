@@ -8,46 +8,32 @@ using UnityEngine;
 
 namespace Mod_PandaBloodRodEffectMod
 {
-    [HarmonyPatch]
-    internal class BloodRodPatch
+    [HarmonyPatch(typeof(AttackProcess), nameof(AttackProcess.Prepare))]
+    internal class StaffBloodPatch
     {
-        [HarmonyPrefix]
-        [HarmonyPatch(typeof(ActMelee), nameof(ActMelee.Attack))]
-        internal static void BloodRodPrefix(ActMelee __instance)
+        [HarmonyPostfix]
+        static void PreparePostfix(AttackProcess __instance, Chara _CC, Thing _weapon)
         {
-            Chara attacker = Act.CC;
-            if (attacker == null) return;
+            if (_CC == null || _weapon == null) return;
 
-            Thing equippedWeapon = null;
-            foreach (BodySlot slot in attacker.body.slots)
-            {
-                if (slot.thing != null && slot.thing.id == "staff_blood")
-                {
-                    equippedWeapon = slot.thing;
-                    break;
-                }
-            }
-            if (equippedWeapon == null) return;
+            if (_weapon.id != "staff_blood") return;
 
-            int currentMP = attacker.mana.value;
-            int maxMP = attacker.mana.max;
+            int maxMP = _CC.mana.max;
+            int currentMP = _CC.mana.value;
 
             if (currentMP <= 20) return;
+            if (maxMP <= 0) return;
 
             int mpCost = Mathf.FloorToInt(maxMP * 0.05f);
             int bonusDice = Mathf.Min(200, Mathf.FloorToInt(maxMP * 0.005f));
 
-            attacker.mana.value -= mpCost;
+            if (mpCost <= 0 && bonusDice <= 0) return;
 
-            if (AttackProcess.Current != null)
-            {
-                var field = AccessTools.Field(typeof(AttackProcess), "diceNum");
-                if (field != null)
-                {
-                    int original = (int)field.GetValue(AttackProcess.Current);
-                    field.SetValue(AttackProcess.Current, original + bonusDice);
-                }
-            }
+            _CC.mana.Mod(-mpCost);
+
+            __instance.dNum += bonusDice;
+
+            Msg.SayRaw($"[staff_blood] MP {currentMP} -> {_CC.mana.value} | dNum {__instance.dNum} (+{bonusDice})");
         }
     }
 }

@@ -32,8 +32,6 @@ namespace Mod_PandaBloodRodEffectMod
             _CC.mana.Mod(-mpCost);
 
             __instance.dNum += bonusDice;
-
-            Msg.SayRaw($"[staff_blood] MP {currentMP} -> {_CC.mana.value} | dNum {__instance.dNum} (+{bonusDice})");
         }
     }
 }
